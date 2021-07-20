@@ -1,8 +1,9 @@
 name: Create EKS cluster
 on: [workflow_dispatch]
 env:
-  REGION: us-west-2
+  REGION: ${{ secrets.AWS_REGION }}
   CLUSTER: quarkus-kubernetes
+  VERSION: '1.20'
 jobs:
   create_cluster:
     runs-on: ubuntu-latest
@@ -15,4 +16,4 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.REGION }}
       - name: Provision cluster
-        uses: aws-actions/amazon-eks-fargate@v0.1.1
+        uses: DanielFidalgo/amazon-eks-fargate@master
