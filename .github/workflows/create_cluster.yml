@@ -13,12 +13,12 @@ on:
       kubernetes_version:
         description: 'set the kubernetes cluster version'
         required: true
-        default: '1.20'
+        default: "1.20"
 
 env:
   REGION: ${{ github.event.inputs.region }}
   CLUSTER: quarkus-kubernetes-${{ github.event.inputs.environment }}
-  VERSION: ${{ github.event.inputs.kubernetes_version | quote }}
+  VERSION: ${{ github.event.inputs.kubernetes_version }}
 jobs:
   create_cluster:
     runs-on: ubuntu-latest
