@@ -6,10 +6,19 @@ on:
         description: 'Set the environment to execute'
         required: true
         default: prod
+      region:
+        description: 'set the AWS region to create the cluster'
+        required: true
+        default: us-west-2
+      kubernetes_version:
+        description: 'set the kubernetes cluster version'
+        required: true
+        default: '1.20'
+
 env:
-  REGION: ${{ secrets.AWS_REGION }}
-  CLUSTER: quarkus-kubernetes
-  VERSION: '1.20'
+  REGION: ${{ github.event.inputs.region }}
+  CLUSTER: quarkus-kubernetes-${{ github.event.inputs.environment }}
+  VERSION: ${{ github.event.inputs.kubernetes_version }}
 jobs:
   create_cluster:
     runs-on: ubuntu-latest
