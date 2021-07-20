@@ -1,5 +1,11 @@
 name: Create EKS cluster
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Set the environment to execute'
+        required: true
+        default: prod
 env:
   REGION: ${{ secrets.AWS_REGION }}
   CLUSTER: quarkus-kubernetes
