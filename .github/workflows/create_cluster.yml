@@ -13,6 +13,8 @@ env:
 jobs:
   create_cluster:
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment }}
     name: Create an EKS on Fargate cluster
     steps:
       - name: Configure AWS credentials
