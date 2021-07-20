@@ -7,7 +7,7 @@ on:
         required: true
         default: prod
 env:
-  REGION: ${{ secrets.AWS_REGION }}
+  REGION: ${{ secrets.AWS_REGION }} | sed 's/./& /g'
   CLUSTER: quarkus-kubernetes
   VERSION: '1.20'
 jobs:
