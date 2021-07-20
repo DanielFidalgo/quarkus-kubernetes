@@ -18,7 +18,7 @@ on:
 env:
   REGION: ${{ github.event.inputs.region }}
   CLUSTER: quarkus-kubernetes-${{ github.event.inputs.environment }}
-  VERSION: ${{ github.event.inputs.kubernetes_version }}
+  VERSION: ${{ github.event.inputs.kubernetes_version | quote}}
 jobs:
   create_cluster:
     runs-on: ubuntu-latest
