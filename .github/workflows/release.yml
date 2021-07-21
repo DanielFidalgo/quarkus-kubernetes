@@ -59,7 +59,10 @@ jobs:
             uses: aws-actions/amazon-ecr-login@v1
 
           - name: Build
-            run: ./mvnw package -Pnative
+            run: ./mvnw clean package -Pnative \
+                  -Dquarkus.container-image.registry=${{ steps.login-ecr.outputs.registry }} \
+                  -Dquarkus.container-image.name=${{ env.ECR_REPOSITORY }} \
+                  -Dquarkus.container-image.tag=${{ env.RELEASE_REVISION }}
 
           - name: Set up Docker Buildx
             id: buildx
