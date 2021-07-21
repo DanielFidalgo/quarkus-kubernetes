@@ -70,7 +70,7 @@ jobs:
             run: |
               docker buildx create --use
 
-              docker buildx build -f src/main/docker/Dockerfile.native-distroless -t quarkus/quarkus-kubernetes . \
+              docker buildx build -f src/main/docker/Dockerfile.native-distroless -t quarkus/quarkus-kubernetes \
                 --cache-from=type=local,src=/tmp/.buildx-cache \
                 --cache-to=type=local,dest=/tmp/.buildx-cache-new \
                 --tag ${{ env.RELEASE_IMAGE }} \
