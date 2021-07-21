@@ -84,7 +84,7 @@ jobs:
           - name: Apply Kubernetes deployment
             uses: kodermax/kubectl-aws-eks@master
             env:
-              DEPLOYMENT: target/kubernetes/kybernetes.yml
+              DEPLOYMENT: target/kubernetes/kubernetes.yml
             with:
               args: apply -f $DEPLOYMENT
 
