@@ -88,7 +88,7 @@ jobs:
                 --tag ${{ env.RELEASE_IMAGE }} \
                 --target release \
                 --push \
-                src/main/docker/Dockerfile.native-distroless
+                ./src/main/docker/Dockerfile.native-distroless
 
               rm -rf /tmp/.buildx-cache
               mv /tmp/.buildx-cache-new /tmp/.buildx-cache
