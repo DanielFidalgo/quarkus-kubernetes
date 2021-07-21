@@ -5,7 +5,7 @@ on:
     types: [published]
 
 env:
-  RELEASE_REVISION: "${{ github.event.release.tag_name }}-${{ github.event.release.head.sha }}"
+  RELEASE_REVISION: "${{ github.event.release.tag_name }}"
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: us-west-2
