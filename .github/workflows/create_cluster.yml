@@ -17,7 +17,7 @@ on:
 
 env:
   REGION: ${{ github.event.inputs.region }}
-  CLUSTER: quarkus-kubernetes-${{ github.event.inputs.environment }}
+  CLUSTER: ${{ github.event.repository.name }}-${{ github.event.inputs.environment }}
   VERSION: ${{ github.event.inputs.kubernetes_version }}
 jobs:
   create_cluster:
