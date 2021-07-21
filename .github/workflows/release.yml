@@ -25,6 +25,16 @@ jobs:
             with:
               access_token: ${{ github.token }}
 
+          - name: cache layers
+            uses: actions/cache@v2
+            with:
+              path: |
+                ~/.m2
+                /tmp/.buildx-cache
+              key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+              restore-keys: |
+                ${{ runner.os }}-single-buildx
+
           - name: Checkout
             uses: actions/checkout@v2
             with:
@@ -55,10 +65,12 @@ jobs:
             id: buildx
             uses: docker/setup-buildx-action@master
 
-          - name: Docker cache layers
+          - name: cache layers
             uses: actions/cache@v2
             with:
-              path: /tmp/.buildx-cache
+              path: |
+                ~/.m2
+                /tmp/.buildx-cache
               key: ${{ runner.os }}-single-buildx-${{ github.sha }}
               restore-keys: |
                 ${{ runner.os }}-single-buildx
@@ -71,13 +83,12 @@ jobs:
               docker buildx create --use
 
               docker buildx build \
-                --file=src/main/docker/Dockerfile.native-distroless
                 --cache-from=type=local,src=/tmp/.buildx-cache \
                 --cache-to=type=local,dest=/tmp/.buildx-cache-new \
                 --tag ${{ env.RELEASE_IMAGE }} \
                 --target release \
                 --push \
-                .
+                src/main/docker/Dockerfile.native-distroless
 
               rm -rf /tmp/.buildx-cache
               mv /tmp/.buildx-cache-new /tmp/.buildx-cache
