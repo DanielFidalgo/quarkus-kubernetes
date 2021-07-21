@@ -40,13 +40,6 @@ jobs:
             with:
               ref: ${{ github.event.release.head.sha }}
 
-          - name: Set up GraalVM JDK 11
-            uses: DeLaGuardo/setup-graalvm@4.0
-            with:
-              graalvm: '21.0.0.2'
-              java: 'java11'
-              arch: 'amd64'
-
           - name: Configure AWS credentials
             uses: aws-actions/configure-aws-credentials@v1
             with:
@@ -59,7 +52,11 @@ jobs:
             uses: aws-actions/amazon-ecr-login@v1
 
           - name: Build
-            run: ./mvnw clean package -Pnative -Dquarkus.container-image.registry=${{ steps.login-ecr.outputs.registry }} -Dquarkus.container-image.name=${{ env.ECR_REPOSITORY }} -Dquarkus.container-image.tag=${{ env.RELEASE_REVISION }}
+            run: |
+              ./mvnw clean package -Pnative -Dquarkus.container-image.registry=${{ steps.login-ecr.outputs.registry }} \
+              -Dquarkus.container-image.name=${{ env.ECR_REPOSITORY }} \
+              -Dquarkus.container-image.tag=${{ env.RELEASE_REVISION }} \
+              -Dquarkus.native.container-build=true
 
           - name: Set up Docker Buildx
             id: buildx
