@@ -81,6 +81,13 @@ jobs:
               rm -rf /tmp/.buildx-cache
               mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
+          - name: Apply Kubernetes deployment
+            uses: kodermax/kubectl-aws-eks@master
+            env:
+              DEPLOYMENT: target/kubernetes/kybernetes.yml
+            with:
+              args: apply -f $DEPLOYMENT
+
           - name: Deploy to Kubernetes cluster
             uses: kodermax/kubectl-aws-eks@master
             env:
