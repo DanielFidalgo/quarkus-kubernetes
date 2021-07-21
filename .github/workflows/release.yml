@@ -3,11 +3,12 @@ name: Release
 on:
   release:
     types: [published]
+
 env:
   RELEASE_REVISION: "${{ github.event.release.tag_name }}-${{ github.event.pull_request.head.sha }}"
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_REGION: us-west-2
   KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
   KUBE_NAMESPACE: production
   ECR_REPOSITORY: fidalgo
@@ -29,6 +30,13 @@ jobs:
             with:
               ref: ${{ github.event.release.head.sha }}
 
+          - name: Set up GraalVM JDK 11
+            uses: DeLaGuardo/setup-graalvm@4.0
+            with:
+              graalvm: '21.0.0.2'
+              java: 'java11'
+              arch: 'amd64'
+
           - name: Configure AWS credentials
             uses: aws-actions/configure-aws-credentials@v1
             with:
@@ -39,6 +47,9 @@ jobs:
           - name: Login to Amazon ECR
             id: login-ecr
             uses: aws-actions/amazon-ecr-login@
+
+          - name: Build
+            run: ./mvnw package -Pnative
 
           - name: Set up Docker Buildx
             id: buildx
@@ -59,7 +70,7 @@ jobs:
             run: |
               docker buildx create --use
 
-              docker buildx build \
+              docker buildx build -f src/main/docker/Dockerfile.native-distroless -t quarkus/quarkus-kubernetes . \
                 --cache-from=type=local,src=/tmp/.buildx-cache \
                 --cache-to=type=local,dest=/tmp/.buildx-cache-new \
                 --tag ${{ env.RELEASE_IMAGE }} \
