@@ -67,6 +67,7 @@ jobs:
 
           - name: delete old Kubernetes deployment
             uses: kodermax/kubectl-aws-eks@master
+            continue-on-error: true
             with:
               args: delete -n default deployment ${{ github.event.repository.name }}
 
