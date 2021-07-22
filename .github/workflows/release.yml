@@ -61,6 +61,8 @@ jobs:
               -Dquarkus.container-image.push=true \
               -Dquarkus.kubernetes.namespace=${{ env.KUBE_NAMESPACE }} \
               -Dquarkus.kubernetes.annotations.CapacityProvisioned="0.25vCPU 0.5GB" \
+              -Dquarkus.kubernetes.annotations."service.beta.kubernetes.io/aws-load-balancer-type"="nlb-ip" \
+              -Dquarkus.kubernetes.annotations."service.beta.kubernetes.io/aws-load-balancer-proxy-protocol"="*" \
               -Dquarkus.kubernetes.service-type=load-balancer \
               -Dquarkus.native.container-build=true
 
