@@ -80,4 +80,4 @@ jobs:
             env:
               RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.RELEASE_REVISION }}
             with:
-              args: run -i $RELEASE_IMAGE
+              args: run -i ${{ github.event.repository.name }} --image=$RELEASE_IMAGE
