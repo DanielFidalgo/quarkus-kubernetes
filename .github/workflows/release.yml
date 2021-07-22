@@ -59,11 +59,10 @@ jobs:
               -Dquarkus.container-image.group="" \
               -Dquarkus.container-image.build=true \
               -Dquarkus.container-image.push=true \
-              -Dquarkus.kubernetes.labels.eks.amazonaws.com/component=${{ github.event.repository.name }} \
-              -Dquarkus.kubernetes.labels.eks.amazonaws.com/fargate-profile=defaultfp \
               -Dquarkus.kubernetes.namespace=default \
               -Dquarkus.kubernetes.annotations.CapacityProvisioned="0.25vCPU 0.5GB" \
               -Dquarkus.kubernetes.deploy=true \
+              -Dquarkus.http.port=4040 \
               -Dquarkus.native.container-build=true
 
 
