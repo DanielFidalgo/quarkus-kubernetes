@@ -61,6 +61,7 @@ jobs:
               -Dquarkus.container-image.push=true \
               -Dquarkus.kubernetes.namespace=${{ env.KUBE_NAMESPACE }} \
               -Dquarkus.kubernetes.annotations.CapacityProvisioned="0.25vCPU 0.5GB" \
+              -Dquarkus.kubernetes.service-type=load-balancer \
               -Dquarkus.http.port=4040 \
               -Dquarkus.native.container-build=true
 
