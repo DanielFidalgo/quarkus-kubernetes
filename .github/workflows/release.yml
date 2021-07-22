@@ -61,22 +61,21 @@ jobs:
               -Dquarkus.container-image.push=true \
               -Dquarkus.kubernetes.namespace=default \
               -Dquarkus.kubernetes.annotations.CapacityProvisioned="0.25vCPU 0.5GB" \
-              -Dquarkus.kubernetes.deploy=true \
               -Dquarkus.http.port=4040 \
               -Dquarkus.native.container-build=true
 
 
-#          - name: delete old Kubernetes deployment
-#            uses: kodermax/kubectl-aws-eks@master
-#            with:
-#              args: delete -n default deployment ${{ github.event.repository.name }}
-#
-#          - name: Apply Kubernetes deployment
-#            uses: kodermax/kubectl-aws-eks@master
-#            env:
-#              DEPLOYMENT: target/kubernetes/kubernetes.yml
-#            with:
-#              args: apply -f $DEPLOYMENT
+          - name: delete old Kubernetes deployment
+            uses: kodermax/kubectl-aws-eks@master
+            with:
+              args: delete -n default deployment ${{ github.event.repository.name }}
+
+          - name: Apply Kubernetes deployment
+            uses: kodermax/kubectl-aws-eks@master
+            env:
+              DEPLOYMENT: target/kubernetes/kubernetes.yml
+            with:
+              args: apply -f $DEPLOYMENT
 #
 #          - name: run image
 #            uses: kodermax/kubectl-aws-eks@master
