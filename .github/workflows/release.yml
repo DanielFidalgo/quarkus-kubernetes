@@ -30,6 +30,7 @@ jobs:
             with:
               path: |
                 ~/.m2
+                ~/m2
                 /tmp/.buildx-cache
               key: ${{ runner.os }}-single-buildx-${{ github.sha }}
               restore-keys: |
@@ -56,6 +57,8 @@ jobs:
               ./mvnw clean package -Pnative -Dquarkus.container-image.registry=${{ steps.login-ecr.outputs.registry }} \
               -Dquarkus.container-image.name=${{ env.ECR_REPOSITORY }} \
               -Dquarkus.container-image.tag=${{ env.RELEASE_REVISION }} \
+              -Dquarkus.container-image.group="" \
+              -Dquarkus.kubernetes.namespace=default
               -Dquarkus.native.container-build=true
 
           - name: Set up Docker Buildx
