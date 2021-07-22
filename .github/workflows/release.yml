@@ -31,7 +31,6 @@ jobs:
               path: |
                 ~/.m2
                 ~/m2
-                /tmp/.buildx-cache
               key: ${{ runner.os }}-single-buildx-${{ github.sha }}
               restore-keys: |
                 ${{ runner.os }}-single-buildx
@@ -57,29 +56,17 @@ jobs:
               ./mvnw clean package -Pnative -Dquarkus.container-image.registry=${{ steps.login-ecr.outputs.registry }} \
               -Dquarkus.container-image.name=${{ env.ECR_REPOSITORY }} \
               -Dquarkus.container-image.tag=${{ env.RELEASE_REVISION }} \
+              -Dquarkus.container-image.build=true \
+              -Dquarkus.container-image.push=true\
               -Dquarkus.container-image.group="" \
               -Dquarkus.kubernetes.namespace=default \
               -Dquarkus.native.container-build=true
 
-          - name: Set up Docker Buildx
-            id: buildx
-            uses: docker/setup-buildx-action@master
+
+          - name: Apply Kubernetes deployment
+            uses: kodermax/kubectl-aws-eks@master
             with:
-              install: true
-
-          - name: Build & Push Image
-            env:
-              ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-              RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.RELEASE_REVISION }}
-            run: |
-              docker build -f src/main/docker/Dockerfile.native-distroless \
-              --cache-from=type=local,src=/tmp/.buildx-cache \
-              --cache-to=type=local,dest=/tmp/.buildx-cache-new \
-              --push \
-              -t ${{ env.RELEASE_IMAGE }}  .
-
-              rm -rf /tmp/.buildx-cache
-              mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+              args: delete -n default deployment ${{ github.event.repository.name }}
 
           - name: Apply Kubernetes deployment
             uses: kodermax/kubectl-aws-eks@master
@@ -88,9 +75,9 @@ jobs:
             with:
               args: apply -f $DEPLOYMENT
 
-          - name: Deploy to Kubernetes cluster
+          - name: run image
             uses: kodermax/kubectl-aws-eks@master
             env:
               RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.RELEASE_REVISION }}
             with:
-              args: run -i --image=${{ env.ECR_REPOSITORY }}:${{ env.RELEASE_REVISION }}
+              args: run -i --image=$RELEASE_IMAGE
