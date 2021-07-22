@@ -58,7 +58,7 @@ jobs:
               -Dquarkus.container-image.name=${{ env.ECR_REPOSITORY }} \
               -Dquarkus.container-image.tag=${{ env.RELEASE_REVISION }} \
               -Dquarkus.container-image.group="" \
-              -Dquarkus.kubernetes.namespace=default
+              -Dquarkus.kubernetes.namespace=default \
               -Dquarkus.native.container-build=true
 
           - name: Set up Docker Buildx
