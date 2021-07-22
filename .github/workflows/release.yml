@@ -58,7 +58,7 @@ jobs:
               -Dquarkus.container-image.tag=${{ env.RELEASE_REVISION }} \
               -Dquarkus.container-image.group="" \
               -Dquarkus.container-image.build=true \
-              -Dquarkus.container-image.push=true\
+              -Dquarkus.container-image.push=true \
               -Dquarkus.kubernetes.namespace=default \
               -Dquarkus.native.container-build=true
 
