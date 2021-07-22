@@ -56,14 +56,14 @@ jobs:
               ./mvnw clean package -Pnative -Dquarkus.container-image.registry=${{ steps.login-ecr.outputs.registry }} \
               -Dquarkus.container-image.name=${{ env.ECR_REPOSITORY }} \
               -Dquarkus.container-image.tag=${{ env.RELEASE_REVISION }} \
+              -Dquarkus.container-image.group="" \
               -Dquarkus.container-image.build=true \
               -Dquarkus.container-image.push=true\
-              -Dquarkus.container-image.group="" \
               -Dquarkus.kubernetes.namespace=default \
               -Dquarkus.native.container-build=true
 
 
-          - name: Apply Kubernetes deployment
+          - name: delete old Kubernetes deployment
             uses: kodermax/kubectl-aws-eks@master
             with:
               args: delete -n default deployment ${{ github.event.repository.name }}
@@ -80,4 +80,4 @@ jobs:
             env:
               RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.RELEASE_REVISION }}
             with:
-              args: run -i --image=$RELEASE_IMAGE
+              args: run -i $RELEASE_IMAGE
