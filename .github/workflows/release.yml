@@ -10,7 +10,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: us-west-2
   KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-  KUBE_NAMESPACE: kube-system
+  KUBE_NAMESPACE: serverless
   ECR_REPOSITORY: ${{ github.event.repository.name }}
 
 jobs:
