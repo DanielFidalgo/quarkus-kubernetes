@@ -79,26 +79,14 @@ jobs:
         with:
           args: apply -f ${{ env.BASE_PATH }}service/loadbalancer-aws-elb.yaml
 
-      - name: Update Image Version in the related HelmChart values.yaml
-        uses: fjogeleit/yaml-update-action@master
-        with:
-          valueFile: '${{ env.BASE_PATH }}common/nginx-config.yaml'
-          propertyPath: 'data'
-          value:
-            proxy-protocol: "True"
-            real-ip-header: "proxy_protocol"
-            set-real-ip-from: "0.0.0.0/0"
-          commitChange: false
-          updateFile: true
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Apply config map with proxy info
         uses: kodermax/kubectl-aws-eks@master
         continue-on-error: false
         with:
-          args: apply -f ${{ env.BASE_PATH }}common/nginx-config.yaml
-
-      - name: Checkout repository
-        uses: actions/checkout@v2
+          args: apply -f .ingress/nginx-config.yaml
 
       - name: Apply config map with proxy info
         uses: kodermax/kubectl-aws-eks@master
