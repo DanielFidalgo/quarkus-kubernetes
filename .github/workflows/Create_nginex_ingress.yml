@@ -84,7 +84,7 @@ jobs:
         with:
           valueFile: '${{ env.BASE_PATH }}common/nginx-config.yaml'
           propertyPath: 'data'
-          value: |
+          value:
             proxy-protocol: "True"
             real-ip-header: "proxy_protocol"
             set-real-ip-from: "0.0.0.0/0"
