@@ -24,7 +24,7 @@ jobs:
     environment:
       name: ${{ github.event.inputs.environment }}
     steps:
-      - name: Checkout
+      - name: Checkout kubernetes-ingress
         uses: actions/checkout@v2
         with:
           repository: nginxinc/kubernetes-ingress
@@ -39,42 +39,69 @@ jobs:
 
       - name: Apply namespace and service account
         uses: kodermax/kubectl-aws-eks@master
-        continue-on-error: true
+        continue-on-error: false
         with:
           args: apply -f ${{ env.BASE_PATH }}common/ns-and-sa.yaml
 
       - name: Apply default server secret
         uses: kodermax/kubectl-aws-eks@master
-        continue-on-error: true
+        continue-on-error: false
         with:
           args: apply -f ${{ env.BASE_PATH }}common/default-server-secret.yaml
 
       - name: Apply config map
         uses: kodermax/kubectl-aws-eks@master
-        continue-on-error: true
+        continue-on-error: false
         with:
           args: apply -f ${{ env.BASE_PATH }}common/common/nginx-config.yaml
 
       - name: Apply role-based access control
         uses: kodermax/kubectl-aws-eks@master
-        continue-on-error: true
+        continue-on-error: false
         with:
           args: apply -f ${{ env.BASE_PATH }}rbac/rbac.yaml
 
       - name: Apply ingress-class
         uses: kodermax/kubectl-aws-eks@master
-        continue-on-error: true
+        continue-on-error: false
         with:
           args: apply -f ${{ env.BASE_PATH }}common/ingress-class.yaml
 
       - name: Apply deployment
         uses: kodermax/kubectl-aws-eks@master
-        continue-on-error: true
+        continue-on-error: false
         with:
           args: apply -f ${{ env.BASE_PATH }}deployment/nginx-ingress.yaml
 
       - name: Apply  Service loadbalancer
         uses: kodermax/kubectl-aws-eks@master
-        continue-on-error: true
+        continue-on-error: false
         with:
           args: apply -f ${{ env.BASE_PATH }}service/loadbalancer-aws-elb.yaml
+
+      - name: Update Image Version in the related HelmChart values.yaml
+        uses: fjogeleit/yaml-update-action@master
+        with:
+          valueFile: '${{ env.BASE_PATH }}common/common/nginx-config.yaml'
+          propertyPath: 'data'
+          value: |
+            proxy-protocol: "True"
+            real-ip-header: "proxy_protocol"
+            set-real-ip-from: "0.0.0.0/0"
+          commitChange: false
+          updateFile: true
+
+      - name: Apply config map with proxy info
+        uses: kodermax/kubectl-aws-eks@master
+        continue-on-error: false
+        with:
+          args: apply -f ${{ env.BASE_PATH }}common/common/nginx-config.yaml
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Apply config map with proxy info
+        uses: kodermax/kubectl-aws-eks@master
+        continue-on-error: false
+        with:
+          args: apply -f .ingress/micro-ingress.yaml
