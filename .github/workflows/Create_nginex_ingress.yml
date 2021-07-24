@@ -95,7 +95,7 @@ jobs:
         uses: kodermax/kubectl-aws-eks@master
         continue-on-error: false
         with:
-          args: apply -f ${{ env.BASE_PATH }}common/common/nginx-config.yaml
+          args: apply -f ${{ env.BASE_PATH }}common/nginx-config.yaml
 
       - name: Checkout repository
         uses: actions/checkout@v2
