@@ -32,8 +32,8 @@ jobs:
 
       - name: Comand line pwd
         run: |
-        pwd
-        ls -a
+          pwd
+          ls -a
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
