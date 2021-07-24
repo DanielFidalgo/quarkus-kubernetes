@@ -15,13 +15,14 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
   BASE_PATH: kubernetes-ingress/deployments/
+  AWS_REGION: ${{ github.event.inputs.region }}
 
 jobs:
   create:
     name: Create
     runs-on: ubuntu-latest
     environment:
-      name: prod
+      name: ${{ github.event.inputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
