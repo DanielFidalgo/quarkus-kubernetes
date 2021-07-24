@@ -1,0 +1,72 @@
+name: Create NGINX Ingress
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Set the environment to execute'
+        required: true
+        default: prod
+      region:
+        description: 'set the AWS region to create the cluster'
+        required: true
+        default: us-west-2
+env:
+  KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+  BASE_PATH: kubernetes-ingress/deployments/
+
+jobs:
+  create:
+    name: Create
+    runs-on: ubuntu-latest
+    environment:
+      name: prod
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: nginxinc/kubernetes-ingress
+          ref: v1.10.1
+
+
+
+      - name: Apply namespace and service account
+        uses: kodermax/kubectl-aws-eks@master
+        continue-on-error: true
+        with:
+          args: apply -f ${{ env.BASE_PATH }}common/ns-and-sa.yaml
+
+      - name: Apply default server secret
+        uses: kodermax/kubectl-aws-eks@master
+        continue-on-error: true
+        with:
+          args: apply -f ${{ env.BASE_PATH }}common/default-server-secret.yaml
+
+      - name: Apply config map
+        uses: kodermax/kubectl-aws-eks@master
+        continue-on-error: true
+        with:
+          args: apply -f ${{ env.BASE_PATH }}common/common/nginx-config.yaml
+
+      - name: Apply role-based access control
+        uses: kodermax/kubectl-aws-eks@master
+        continue-on-error: true
+        with:
+          args: apply -f ${{ env.BASE_PATH }}rbac/rbac.yaml
+
+      - name: Apply ingress-class
+        uses: kodermax/kubectl-aws-eks@master
+        continue-on-error: true
+        with:
+          args: apply -f ${{ env.BASE_PATH }}common/ingress-class.yaml
+
+      - name: Apply deployment
+        uses: kodermax/kubectl-aws-eks@master
+        continue-on-error: true
+        with:
+          args: apply -f ${{ env.BASE_PATH }}deployment/nginx-ingress.yaml
+
+      - name: Apply  Service loadbalancer
+        uses: kodermax/kubectl-aws-eks@master
+        continue-on-error: true
+        with:
+          args: apply -f ${{ env.BASE_PATH }}service/loadbalancer-aws-elb.yaml
