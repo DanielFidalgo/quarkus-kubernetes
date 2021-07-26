@@ -36,8 +36,7 @@ jobs:
         uses: DanielFidalgo/amazon-eks-fargate@master
       - name: Recover kube config in base64
         id: kube-config
-        run: |
-        ::set-output name=base64-encripted:: cat ~/.kube/config | base64
+        run: ECHO " ::set-output name=base64-encripted:: cat ~/.kube/config | base64 "
       - name: update SECRET
         uses: hmanzur/actions-set-secret@v2.0.0
         with:
