@@ -45,4 +45,3 @@ jobs:
           value: ${{ steps.kube-config.outputs.base64-encripted }}
           repository: hmanzur/actions-set-secret
           token: ${{ secrets.PA_TOKEN }}
-
