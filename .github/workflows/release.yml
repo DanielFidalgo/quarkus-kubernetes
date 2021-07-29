@@ -63,16 +63,19 @@ jobs:
               -Dquarkus.kubernetes.annotations.CapacityProvisioned="0.25vCPU 0.5GB" \
               -Dquarkus.native.container-build=true
 
-
-          - name: delete old Kubernetes deployment
-            uses: kodermax/kubectl-aws-eks@master
-            continue-on-error: true
-            with:
-              args: delete -n ${{ env.KUBE_NAMESPACE }} deployment ${{ github.event.repository.name }}
-
           - name: Apply Kubernetes deployment
             uses: kodermax/kubectl-aws-eks@master
+            id: apply_deploy
+            continue-on-error: true
             env:
               DEPLOYMENT: target/kubernetes/kubernetes.yml
             with:
               args: apply -f $DEPLOYMENT
+
+          - name: Apply Kubernetes deployment
+            uses: kodermax/kubectl-aws-eks@master
+            env:
+              RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.RELEASE_REVISION }}
+            if: steps.apply_deploy.outcome != 'success'
+            with:
+              args: set image deployment/${{ env.ECR_REPOSITORY }} app=$RELEASE_IMAGE --record -n ${{ env.KUBE_NAMESPACE }}
