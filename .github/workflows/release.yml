@@ -64,7 +64,7 @@ jobs:
               -Dquarkus.native.container-build=true
 
           - name: Apply Kubernetes deployment
-            uses: kodermax/kubectl-aws-eks@master
+            uses: DanielFidalgo/kubectl-aws-eks@master
             id: apply_deploy
             continue-on-error: true
             env:
@@ -73,7 +73,7 @@ jobs:
               args: apply -f $DEPLOYMENT
 
           - name: Apply Kubernetes deployment
-            uses: kodermax/kubectl-aws-eks@master
+            uses: DanielFidalgo/kubectl-aws-eks@master
             env:
               RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.RELEASE_REVISION }}
             if: steps.apply_deploy.outcome != 'success'
