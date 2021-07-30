@@ -13,7 +13,7 @@ on:
       kubernetes_version:
         description: 'set the kubernetes cluster version'
         required: true
-        default: "1.20"
+        default: "1.21"
 
 env:
   REGION: ${{ github.event.inputs.region }}
@@ -36,8 +36,7 @@ jobs:
         uses: DanielFidalgo/amazon-eks-fargate@master
       - name: Recover kube config in base64
         id: kube-config
-        run: |
-          echo "::set-output name=base64-encripted::$(cat ~/.kube/config | base64)"
+        run: echo "::set-output name=base64-encripted::$(cat ~/.kube/config | base64)"
       - name: update SECRET
         uses: hmanzur/actions-set-secret@v2.0.0
         with:
