@@ -31,9 +31,9 @@ jobs:
               path: |
                 ~/.m2
                 ~/m2
-              key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+              key: ${{ runner.os }}-${{ github.event.repository.name }}
               restore-keys: |
-                ${{ runner.os }}-single-buildx
+                ${{ runner.os }}-${{ github.event.repository.name }}
 
           - name: Checkout
             uses: actions/checkout@v2
